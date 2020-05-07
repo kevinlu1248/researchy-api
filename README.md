@@ -22,5 +22,7 @@ You can also directly send it to https://researchy-api--kevinlu2.repl.co/ but it
 I used repl.it since I'm broke after using a couple Google products but I'll probably eventually migrate it to an actual server. 
 I tried AWS Lambda but had issues with spacy breaking the 50 mb storage size. 
 
+Chrome extension can be found at https://github.com/kevinlu1248/researchy-chrome-extension/tree/master.
+
 # What I used
 TODO
