@@ -19,5 +19,8 @@ Make POST requests at https://127.0.0.1:5000 with the following structure
 Either the text or the url has to not be ```none```, but you can send one and omit the other. ```text``` should be html.
 You can also directly send it to https://researchy-api--kevinlu2.repl.co/ but it might crash repl.it so preferably run it locally.
 
+I used repl.it since I'm broke after using a couple Google products but I'll probably eventually migrate it to an actual server. 
+I tried AWS Lambda but had issues with spacy breaking the 50 mb storage size. 
+
 # What I used
 TODO
