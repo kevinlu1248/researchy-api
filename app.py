@@ -20,22 +20,6 @@ class ResearchyAPI(Resource):
 
 api.add_resource(ResearchyAPI, '/')
 
-# @app.route('/', methods=["POST"])
-# def index():
-#     request_body = app.current_request.json_body
-#     # print(request_body)
-#     if "text" not in request_body and "url" not in request_body:
-#         return Response(status_code=422,
-#                         headers={'Content-Type': 'application/json'},
-#                         body={'status': 'Entity Error',
-#                               'message': 'Please provide a text or url file.'})
-#     display = Website(url=request_body.get('url', None),
-#                       raw_html=request_body.get('text', None))
-#     return Response(status_code=200,
-#                     headers={'Content-Type': 'application/json'},
-#                     body={'status': 'Success',
-#                           'message': str(display.annotated_tree)})
-
 # running on https://researchy-api--kevinlu2.repl.co
 
 if __name__ == '__main__':

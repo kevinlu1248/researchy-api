@@ -1,6 +1,6 @@
 .chalice/deployed
 .chalice/deployments
 __pycache__
+
 env
-modules/__pycache__
-requirements-dev.txt
+out
