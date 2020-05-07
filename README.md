@@ -11,7 +11,7 @@ Make POST requests at https://127.0.0.1:5000 with the following structure
 
 ```json
 {
-  "text": "Some string",
+  "text": "Some HTML string",
   "url": "Some url"
 }
 ```
