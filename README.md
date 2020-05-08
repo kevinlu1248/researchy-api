@@ -1,4 +1,7 @@
 # Researchy API
+
+[![Built with spaCy](https://img.shields.io/badge/made%20with%20❤%20and-spaCy-09a3d5.svg)](https://spacy.io)
+
 API for highlighting key terms in a website and making it easily readable, hosted on repl.it at https://researchy-api--kevinlu2.repl.co/. 
 I am planning on making this into a Chrome Extension.
 To get started run in command line 
