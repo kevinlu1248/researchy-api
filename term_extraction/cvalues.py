@@ -101,9 +101,6 @@ def term_counts(document, patterns=patterns4):
     doc = nlp(document, disable=["parser", "ner"])
 
     matches = matcher(doc)
-
-    #     global pbar
-    #     pbar.update(1)
     return term_counter
 
 
@@ -185,6 +182,6 @@ def get_c_values(corpus, patterns=patterns4):
 
 
 if __name__ == "__main__":
-    pkl = pickle.load(open("../data/corpus_body.pickle", "rb"))
+    pkl = pickle.load(open("../data/pmc_testing.pkl", "rb"))
     print(len(pkl))
     corpus = pkl
