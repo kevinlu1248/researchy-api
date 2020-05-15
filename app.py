@@ -24,4 +24,4 @@ api.add_resource(ResearchyAPI, "/")
 # running on https://researchy-api--kevinlu2.repl.co
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=False, port=5001)

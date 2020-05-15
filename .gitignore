@@ -1,6 +1,8 @@
 .chalice/deployed
 .chalice/deployments
 __pycache__
-
+*.pyc
+modules/*.pyc
 env
 out
+data
