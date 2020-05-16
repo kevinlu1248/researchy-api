@@ -35,13 +35,14 @@ class TermExtraction:
     matcher = Matcher(nlp.vocab)
     MAX_WORD_LENGTH = 6
 
-    noun, prep = (
+    noun, adj, prep = (
         {"POS": "NOUN", "IS_PUNCT": False},
+        {"POS": "ADJ", "IS_PUNCT": False},
         {"POS": "DET", "IS_PUNCT": False},
     )
 
-    patterns = [
-        [{"POS": {"IN": ["ADJ", "NOUN"]}, "OP": "+", "IS_PUNCT": False}, noun],
+    patterns = [[adj],
+        [{"POS": {"IN": ["ADJ", "NOUN"]}, "OP": "*", "IS_PUNCT": False}, noun],
         [
             {"POS": {"IN": ["ADJ", "NOUN"]}, "OP": "*", "IS_PUNCT": False},
             noun,
@@ -89,15 +90,17 @@ class TermExtraction:
                     TermExtraction.word_length(candidate)
                     <= TermExtraction.MAX_WORD_LENGTH
                 ):
-                    term_counter[candidate.lower()] += 1
+                    term_counter[candidate] += 1
 
             for i, pattern in enumerate(self.patterns):
                 TermExtraction.matcher.add("term{}".format(i), add_to_counter, pattern)
 
-            doc = TermExtraction.nlp(document, disable=["parser", "ner"])
+            doc = TermExtraction.nlp(document.lower(), disable=["parser", "ner"])
             matches = TermExtraction.matcher(doc)
         else:
-            for end_index, (insert_order, original_value) in self.trie.iter(document):
+            for end_index, (insert_order, original_value) in self.trie.iter(
+                document.lower()
+            ):
                 term_counter[original_value] += 1
         return term_counter
 
@@ -170,6 +173,12 @@ class TermExtraction:
         else:
             return term_counter
 
+
+def add_term_extraction_method(extractor):
+    def decorated(self, *args, **kwargs):
+        return extractor(self.corpus, technical_counts=self.count_terms_from_documents(), *args, **kwargs)
+    setattr(TermExtraction, extractor.__name__, decorated)
+    return extractor
 
 if __name__ == "__main__":
     PATH_TO_GENERAL_DOMAIN = "../data/wiki_testing.pkl"
