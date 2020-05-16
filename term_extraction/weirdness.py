@@ -29,10 +29,11 @@ def end():
     global start_
     print(time.time() - start_)
 
-
-def weirdness(technical_corpus, general_corpus, normalized=False):
+@add_term_extraction_method
+def weirdness(technical_corpus, general_corpus, normalized=False, technical_counts=None):
     # http://ceur-ws.org/Vol-1031/paper3.pdf
-    technical_counts = TermExtraction(technical_corpus).count_terms_from_documents()
+    if technical_counts is None:
+        technical_counts = TermExtraction(technical_corpus).count_terms_from_documents()
     general_counts = TermExtraction(
         general_corpus, technical_counts.index
     ).count_terms_from_documents()

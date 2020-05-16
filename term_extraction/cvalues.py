@@ -13,6 +13,7 @@ from multiprocessing import Pool
 from spacy.matcher import Matcher
 from collections import defaultdict
 from multiprocessing.pool import Pool
+from term_extraction import TermExtraction, add_term_extraction_method
 
 start_ = 0
 tmp = 0
@@ -104,53 +105,44 @@ def term_counts(document, patterns=patterns4):
     return term_counter
 
 
-def get_c_values(corpus, patterns=patterns4):
+@add_term_extraction_method
+def c_values(
+    technical_corpus,
+    smoothing=0.01,
+    verbose=False,
+    have_single_word=False,
+    technical_counts=None,
+):
 
-    if type(corpus) is str:
-        term_counter = term_counts(corpus)
-    elif type(corpus) is list or type(corpus) is pd.Series:
-        term_counter = defaultdict(int)
-
-        def callback(counter_list):
-            for counter in counter_list:
-                for term, frequency in counter.items():
-                    term_counter[term] += frequency
-
-        P = Pool()
-
-        def error_callback(e):
-            print(e)
-            global success
-            success -= 1
-
-        P.map_async(
-            term_counts, corpus, callback=callback, error_callback=error_callback
+    if technical_counts is None:
+        term_counts = (
+            TermExtraction(technical_corpus)
+            .count_terms_from_documents(verbose=verbose)
+            .reindex()
         )
-        P.close()
-        P.join()
-        #         global pbar
-        #         pbar.close()
-        P.terminate()
     else:
-        raise TypeError()
+        term_counts = technical_counts
 
-    term_candidates = dict(
-        sorted(
-            list(term_counter.items()),
-            reverse=True,
-            key=lambda term: term[0].count(" "),
-        )
+    order = sorted(
+        list(term_counts.keys()), key=TermExtraction.word_length, reverse=True
     )
+
+    if not have_single_word:
+        order = list(filter(lambda s: TermExtraction.word_length(s) > 1, order))
+
+    # print(order)
+    term_counts = term_counts[order]
 
     df = pd.DataFrame(
         {
-            "frequency": list(term_candidates.values()),
-            "times_nested": list(term_candidates.values()),
+            "frequency": term_counts.values,
+            "times_nested": term_counts.values,
             "number_of_nested": 1,
             "has_been_evaluated": False,
         },
-        index=term_candidates.keys(),
+        index=term_counts.index,
     )
+
     # print(df)
     output = []
     indices = set(df.index)
@@ -159,9 +151,9 @@ def get_c_values(corpus, patterns=patterns4):
         f, t, n, h = row
         length = word_length(candidate)
         if length == MAX_WORD_LENGTH:
-            c_val = math.log(length) * f
+            c_val = math.log(length + smoothing) * f
         else:
-            c_val = math.log(length) * f
+            c_val = math.log(length + smoothing) * f
             if h:
                 c_val -= t / n
         if c_val >= THRESHOLD:
@@ -185,3 +177,6 @@ if __name__ == "__main__":
     pkl = pickle.load(open("../data/pmc_testing.pkl", "rb"))
     print(len(pkl))
     corpus = pkl
+    # print(c_values(pkl[:20], have_single_word=False))
+    print(TermExtraction(pkl[:20]).c_values())
+    # print(pkl[0])

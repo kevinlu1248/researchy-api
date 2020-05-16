@@ -24,11 +24,6 @@ def end():
     print(time.time() - start_)
 
 
-ALPHA = 1 / 3
-BETA = 1 / 3
-GAMMA = 1 / 3
-
-
 def domain_pertinence(technical_corpus, general_corpus):
     # http://ceur-ws.org/Vol-1031/paper3.pdf
     return 1
@@ -41,8 +36,8 @@ def domain_consensus(technical_corpus, general_corpus):
 def lexical_cohesion(technical_corpus, general_corpus):
     return 1
 
-
-def term_extractor(technical_corpus, general_corpus, weights=None, verbose=False):
+@add_term_extraction_method
+def term_extractor(technical_corpus, general_corpus, weights=None, verbose=False, technical_counts=None):
 
     # reused initializations
     start()
@@ -58,7 +53,7 @@ def term_extractor(technical_corpus, general_corpus, weights=None, verbose=False
     # domain pertinence
     general_counts = TermExtraction(
         general_corpus, technical_counts.index
-    ).count_terms_from_documents()
+    ).count_terms_from_documents(verbose=verbose)
     general_counts /= general_counts.max()
     domain_pertinence = pd.DataFrame(
         data={
@@ -90,6 +85,7 @@ def term_extractor(technical_corpus, general_corpus, weights=None, verbose=False
 
     def lexical_cohesion_function(row):
         word, freq = row.iloc
+        # print(word, freq)
         return (
             TermExtraction.word_length(word)
             * XLOGX(freq)  # remove plus 1 later
@@ -101,6 +97,11 @@ def term_extractor(technical_corpus, general_corpus, weights=None, verbose=False
         index=lexical_cohesion.index,
     )
 
+    if True:
+        domain_pertinence /= domain_pertinence.max()
+        domain_consensus /= domain_consensus.max()
+        lexical_cohesion /= lexical_cohesion.max()
+
     df = pd.DataFrame(
         data={
             "domain_pertinence": domain_pertinence,
@@ -109,13 +110,16 @@ def term_extractor(technical_corpus, general_corpus, weights=None, verbose=False
         }
     )
 
-    print(
-        domain_pertinence.sort_values(ascending=False).head(10),
-        domain_consensus.sort_values(ascending=False).head(10),
-        lexical_cohesion.sort_values(ascending=False).head(10),
-    )
+    if verbose:
+        print(
+            domain_pertinence.sort_values(ascending=False).head(10),
+            "\n",
+            domain_consensus.sort_values(ascending=False).head(10),
+            "\n",
+            lexical_cohesion.sort_values(ascending=False).head(10),
+        )
     if weights is None:
-        weights = np.array([0.4, 0.1, 0.5])
+        weights = np.array([1, 1, 1]) / 3
     end()
     return df.dot(weights)
 
@@ -129,10 +133,10 @@ if __name__ == "__main__":
 
     # print(term_extractor(pmc, wiki).sort_values(ascending=False).head(50))
     print(
-        term_extractor(pmc[:1], wiki[:500], verbose=True)
+        term_extractor(pmc[:50], wiki[:1000], verbose=True)
         .sort_values(ascending=False)
-        .head(100)
+        .head(50)
     )
-    print(pmc[0])
+    # print(pmc[0])
     # Syntactic Analysis: (PP NP PP CNP RVP NP PP)
     # POS: (PAJNNN AJN PNCNNWVANPJN)
