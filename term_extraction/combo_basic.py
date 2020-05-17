@@ -1,9 +1,8 @@
-# c_value
-
-import time
+# combo basic
 import math
 from tqdm import tqdm
 import pandas as pd
+import numpy as np
 from term_extraction import TermExtraction, add_term_extraction_method
 
 start_ = 0
@@ -41,13 +40,16 @@ def helper_get_subsequences(s):
 
 
 @add_term_extraction_method
-def c_values(
+def combo_basic(
     technical_corpus,
     smoothing=0.01,
     verbose=False,
     have_single_word=False,
     technical_counts=None,
+    weights=None,
 ):
+
+    # TODO
 
     if technical_counts is None:
         technical_counts = (
@@ -67,48 +69,46 @@ def c_values(
 
     df = pd.DataFrame(
         {
-            "frequency": technical_counts.values,
-            "times_nested": technical_counts.values,
-            "number_of_nested": 1,
-            "has_been_evaluated": False,
+            "xlogx_score": technical_counts.reset_index()
+            .apply(
+                lambda s: math.log(TermExtraction.word_length(s["index"])) * s[0],
+                axis=1,
+            )
+            .values,
+            "times_subset": 0,
+            "times_superset": 0,
         },
         index=technical_counts.index,
     )
 
-    # print(df)
-    output = []
-    indices = set(df.index)
+    indices = set(technical_counts.index)
 
-    iterator = tqdm(df.iterrows()) if verbose else df.iterrows()
+    def score_of_children(candidate):
+        df.at[candidate, "times_subset"] += 1
+        if TermExtraction.word_length(candidate) is 1:
+            return 1
+        sm = 1
+        for substring in helper_get_subsequences(candidate):
+            if substring in indices:
+                df.at[substring, "times_subset"] += 1
+                df.at[substring, "times_subset"] += 1
+        return sm
 
-    for candidate, row in iterator:
-        f, t, n, h = row
-        length = TermExtraction.word_length(candidate)
-        if length == MAX_WORD_LENGTH:
-            c_val = math.log(length + smoothing) * f
-        else:
-            c_val = math.log(length + smoothing) * f
-            if h:
-                c_val -= t / n
-        if c_val >= THRESHOLD:
-            output.append((candidate, c_val))
-            nstart = time.time()  # TODO: optimize
-            for substring in helper_get_subsequences(candidate):
-                if substring in indices:
-                    df.loc[substring, "times_nested"] += 1
-                    df.loc[substring, "number_of_nested"] += f
-                    df.loc[substring, "has_been_evaluated"] = True
-            global tmp
-            tmp += time.time() - nstart
+    for index in technical_counts.index:
+        for substring in helper_get_subsequences(index):
+            if substring in indices:
+                df.at[substring, "times_subset"] += 1
+                df.at[index, "times_superset"] += 1
 
-    srs = pd.Series(map(lambda s: s[1], output), index=map(lambda s: s[0], output))
-    return srs.sort_values(ascending=False)
+    if weights is None:
+        weights = np.array([1, 0.75, 0.1])
+    return df.apply(lambda s: s.values.dot(weights), axis=1)
 
 
 if __name__ == "__main__":
     import pickle
 
     pkl = pickle.load(open("../data/pmc_testing.pkl", "rb"))
+    print(len(pkl))
     corpus = pkl
-    print(list(TermExtraction(pkl[0]).c_values(verbose=True).index))
-    print(pkl[0])
+    print(TermExtraction(pkl[0]).combo_basic().sort_values(ascending=False).head(50))
