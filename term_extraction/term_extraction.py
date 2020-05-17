@@ -107,7 +107,7 @@ class TermExtraction:
     def count_terms_from_documents(self, seperate=False, verbose=False):
 
         if type(self.corpus) is str:
-            term_counter = count_terms_from_document(corpus)
+            term_counter = pd.Series(self.count_terms_from_document(self.corpus))
         elif type(self.corpus) is list or type(self.corpus) is pd.Series:
             if seperate:
                 term_counters = []
