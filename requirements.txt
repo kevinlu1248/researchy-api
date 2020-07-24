@@ -13,7 +13,7 @@ conllu==2.3.2
 cssselect==1.1.0
 cymem==2.0.3
 docutils==0.15.2
-en-core-web-sm==2.2.5
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
 en-ner-bionlp13cg-md==0.2.4
 enum-compat==0.0.3
 Flask==1.1.2
@@ -36,7 +36,7 @@ preshed==3.0.2
 psutil==5.7.0
 pyahocorasick==1.4.0
 pyasn1==0.4.8
-pyate==0.3.7
+pyate==0.3.10
 pybind11==2.5.0
 pysbd==0.2.3
 python-dateutil==2.8.1
@@ -51,11 +51,11 @@ scipy==1.4.1
 scispacy==0.2.4
 six==1.14.0
 soupsieve==2.0
-spacy==2.2.4
+spacy==2.3.2
 spacy-readability==1.4.1
 srsly==1.0.2
 syllapy==0.7.1
-thinc==7.4.0
+thinc==7.4.1
 threadpoolctl==2.0.0
 tqdm==4.46.0
 typing==3.6.4
