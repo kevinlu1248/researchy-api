@@ -3,6 +3,8 @@
 __pycache__
 *.pyc
 modules/*.pyc
+modules
+.idea
 env
 out
 data
