@@ -8,13 +8,14 @@ api = Api(app)
 
 class ResearchyAPI(Resource):
     def post(self):
-        json_body = request.json
-        if not json_body:
+        body = request.form
+        print(body)
+        if not body:
             return make_response("Please provide a JSON object.", 400)
-        if "text" not in json_body and "url" not in json_body:
+        if "text" not in body and "url" not in body:
             return make_response("Please provide a text or url.", 400)
         display = Website(
-            url=json_body.get("url", None), raw_html=json_body.get("text", None)
+            url=body.get("url", None), raw_html=body.get("text", None)
         )
         return make_response(display.description, 200)
 
