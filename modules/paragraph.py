@@ -19,7 +19,7 @@ class Paragraph:
     html_tag_pattern = re.compile("</?[^/>][^>]*/?>")
     __fivefilters_url = "http://termextract.fivefilters.org/extract.php"
     __priority = {"term": 5, "pos": 1, "cardinal": 1}
-    __IMPORTANCE_RATIO = 0.3
+    __IMPORTANCE_RATIO = 0.05
 
     def __init__(
         self, html, vocab=None, spaced_raw_text=None, ents=None, raw_ents=None
@@ -133,8 +133,9 @@ class Paragraph:
     def key_terms(self):
         if not hasattr(self, "_Paragraph__key_terms"):
             # print(combo_basic(self.raw_text))
+            num_of_terms = int(Paragraph.__IMPORTANCE_RATIO * self.raw_text.count(' '))
             self.__key_terms = combo_basic(self.raw_text).index.values.tolist()
-        #             self.__key_terms = self.fivefilters_get_terms()['text']
+            self.__key_terms = self.__key_terms[:min(len(self.__key_terms) - 1, num_of_terms)]
         return self.__key_terms
 
     @property
