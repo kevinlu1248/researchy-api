@@ -7,6 +7,9 @@ api = Api(app)
 
 
 class ResearchyAPI(Resource):
+    def get(self):
+        # Placeholder
+        return "An API for making an HTML document more legible and highlights key words. Please POST to use this according to https://github.com/kevinlu1248/researchy-api."
     def post(self):
         body = request.form
         print(body)
