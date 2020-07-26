@@ -3,14 +3,33 @@
 import requests
 from copy import deepcopy
 import re
-import spacy
 import json
+from typing import Callable
+
+import spacy
 from pyate import combo_basic
+
 # from timer import *
 # from modules.cvalues import get_c_values
 
 # TODO: make tagged class
 # TODO: add get numbers (with plus or minus)
+
+
+def cached_property(property_function: Callable) -> Callable:
+    """
+    For making properties store themselves as private properties.
+    This is so that the same property does not get computed twice by storing the
+    the result but at the same time unneeded properties never get called. 
+    """
+
+    @property
+    def decorated_property(self):
+        if not hasattr(self, "_{}__{}".format(type(self).__name__, property)):
+            setattr(self, "__{}".format(property.__name__), property_function(self))
+        return getattr(self, "__{}".format(property.__name__))
+
+    return decorated_property
 
 
 class Paragraph:
@@ -110,12 +129,17 @@ class Paragraph:
             "status": response.status_code,
         }
 
-    @property
+    # @property
+    # def raw_text(self):
+    #     if not hasattr(self, "_Paragraph__raw_text"):
+    #         self.__raw_text = deepcopy(self.html)
+    #         self.__raw_text = re.sub(r" {3,}", " ", self.__raw_text)
+    #     return self.__raw_text
+
+    @cached_property
     def raw_text(self):
-        if not hasattr(self, "_Paragraph__raw_text"):
-            self.__raw_text = deepcopy(self.html)
-            self.__raw_text = re.sub(r" {3,}", " ", self.__raw_text)
-        return self.__raw_text
+        raw = deepcopy(self.html)
+        return re.sub(r" {3,}", " ", raw)
 
     @property
     def spaced_raw_text(self):
@@ -133,9 +157,11 @@ class Paragraph:
     def key_terms(self):
         if not hasattr(self, "_Paragraph__key_terms"):
             # print(combo_basic(self.raw_text))
-            num_of_terms = int(Paragraph.__IMPORTANCE_RATIO * self.raw_text.count(' '))
+            num_of_terms = int(Paragraph.__IMPORTANCE_RATIO * self.raw_text.count(" "))
             self.__key_terms = combo_basic(self.raw_text).index.values.tolist()
-            self.__key_terms = self.__key_terms[:min(len(self.__key_terms) - 1, num_of_terms)]
+            self.__key_terms = self.__key_terms[
+                : min(len(self.__key_terms) - 1, num_of_terms)
+            ]
         return self.__key_terms
 
     @property
