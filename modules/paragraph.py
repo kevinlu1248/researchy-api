@@ -132,7 +132,8 @@ class Paragraph:
     @property
     def key_terms(self):
         if not hasattr(self, "_Paragraph__key_terms"):
-            self.__key_terms = list(map(lambda s: s[0], combo_basic(self.raw_text)))
+            # print(combo_basic(self.raw_text))
+            self.__key_terms = combo_basic(self.raw_text).index.values.tolist()
         #             self.__key_terms = self.fivefilters_get_terms()['text']
         return self.__key_terms
 
