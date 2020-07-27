@@ -1,15 +1,17 @@
 import requests
 import re
-import spacy
 import copy
+import time
+
+import spacy
 from lxml import etree
 from readability import Document
 from bs4 import BeautifulSoup
 from pyate import combo_basic
-from modules.paragraph import Paragraph
 import spacy_readability
 
-import time
+from .utils import cached_property
+from .paragraph import Paragraph
 
 tmp = 0
 start_ = time.time()
@@ -89,140 +91,110 @@ class Website:
             )
         return s
 
-    @property
+    @cached_property
     def url(self):
-        if not hasattr(self, "_Website__url"):
-            raise AttributeError("No URL found")
-        return self.__url
+        raise AttributeError("No URL found")
 
-    @property
+    @cached_property
     def raw_html(self):
-        if not hasattr(self, "_Website__raw_html"):
-            response = requests.get(self.url)
-            self.__raw_html = response.text
-        return self.__raw_html
+        print(hasattr(self, "_Website__raw_html"))
+        return requests.get(self.url).text
 
     @property
     def reader_html(self):
-        if not hasattr(self, "_Website__reader_html"):
-            self.__reader_html = Document(self.raw_html)  # kill ads
-        return self.__reader_html
+        return Document(self.raw_html)  # kill ads
 
-    @property
+    @cached_property
     def tree(self):
-        if not hasattr(self, "_Website__tree"):
-            # 90ms
-            self.__tree = BeautifulSoup(self.reader_html.summary(), "lxml")
-        return self.__tree
+        return BeautifulSoup(self.reader_html.summary(), "lxml")
 
-    @property
+    @cached_property
     def display(self):
-        if not hasattr(self, "_Website__display"):
-            self.__display = copy.copy(self.tree)
-            head = self.__display.new_tag("head")
-            title = self.__display.new_tag("title")
-            title.string = self.reader_html.title()
-            head.append(title)
-            self.__display.body.insert_before(head)
+        display_output = copy.copy(self.tree)
+        head = display_output.new_tag("head")
+        title = display_output.new_tag("title")
+        title.string = self.reader_html.title()
+        head.append(title)
+        display_output.body.insert_before(head)
 
-            body_title = self.tree.new_tag("h1")
-            body_title.string = self.reader_html.title()
-            next(self.__display.body.children).insert_before(body_title)
-        return self.__display
+        body_title = self.tree.new_tag("h1")
+        body_title.string = self.reader_html.title()
+        next(display_output.body.children).insert_before(body_title)
+        return display_output
 
-    @property
+    @cached_property
     def links(self):
-        if not hasattr(self, "_Website__links"):
-            self.__links = set()
-            for link in self.raw_tree.find_all("a"):
-                # fix
-                href = link.get("href")
-                if not href or href == "#":
-                    continue
-                if href[0] == "/":
-                    href = self.url + href
-                if (
-                    not href.startswith("http://")
-                    or href.startswith("http://")
-                    or href.startswith("ftp://")
-                ):
-                    href = self.url + "/" + href
-                self.links.add(href)
-        return self.__links
+        rlinks = set()
+        for link in self.raw_tree.find_all("a"):
+            # fix
+            href = link.get("href")
+            if not href or href == "#":
+                continue
+            if href[0] == "/":
+                href = self.url + href
+            if (
+                not href.startswith("http://")
+                or href.startswith("http://")
+                or href.startswith("ftp://")
+            ):
+                href = self.url + "/" + href
+            rlinks.add(href)
+        print(rlinks)
 
-    @property
-    def word_count(self):
-        pass  # TODO: make
-
-    @property
+    @cached_property
     def web_text(self):
-        if not hasattr(self, "_Website__web_text"):
-            self.__web_text = " ".join(
-                filter(
-                    lambda s: len(s) > 300,
-                    map(lambda p: p.get_text(), self.display.find_all("p")),
-                )
+        return " ".join(
+            filter(
+                lambda s: len(s) > 300,
+                map(lambda p: p.get_text(), self.display.find_all("p")),
             )
-        return self.__web_text
+        )
 
-    @property
+    @cached_property
     def grade_level(self):
-        if not hasattr(self, "_Website__grade_level"):
-            self.init_readability()
-        return self.__grade_level
+        self.init_readability()
 
-    @property
+    @cached_property
     def reading_ease(self):
-        if not hasattr(self, "_Website__reading_ease"):
-            self.init_readability()
-        return self.__reading_ease
+        self.init_readability()
 
-    @property
+    @cached_property
     def word_count(self):
-        if not hasattr(self, "_Website__word_count"):
-            self.init_readability()
-        return self.__word_count
+        self.init_readability()
 
-    @property
+    @cached_property
     def annotated_tree(self):
-        if not hasattr(self, "_Website__annotated_tree"):
-            #             start() 13ms
-            self.__annotated_tree = copy.copy(self.display)
+        #             start() 13ms
+        annotated_tree_answer = copy.copy(self.display)
 
-            if self.use_vocab:
-                # 691ms TODO SPEED UP
-                vocab = Paragraph(self.web_text).key_terms
-            else:
-                vocab = []
-            paragraphs = []
-            tags = self.__annotated_tree.find_all("p")
-            for tag in tags:
-                s = tag.encode_contents().decode("utf8")
-                if len(s) <= 300:
-                    continue
-                paragraphs.append(Paragraph(s).spaced_raw_text)
-            tags = filter(
-                lambda tag: len(tag.encode_contents().decode("utf8")) > 300, tags
-            )
-            docs = list(
-                Website.reading_nlp.pipe(paragraphs, disable=["tagger", "parser"])
-            )  # parallelize?
-            for tag, spaced_raw_text, doc in zip(tags, paragraphs, docs):
-                s = tag.encode_contents().decode("utf8")
+        if self.use_vocab:
+            # 691ms TODO SPEED UP
+            vocab = Paragraph(self.web_text).key_terms
+        else:
+            vocab = []
+        paragraphs = []
+        tags = annotated_tree_answer.find_all("p")
+        for tag in tags:
+            s = tag.encode_contents().decode("utf8")
+            if len(s) <= 300:
+                continue
+            paragraphs.append(Paragraph(s).spaced_raw_text)
+        tags = filter(lambda tag: len(tag.encode_contents().decode("utf8")) > 300, tags)
+        docs = list(
+            Website.reading_nlp.pipe(paragraphs, disable=["tagger", "parser"])
+        )  # parallelize?
+        for tag, spaced_raw_text, doc in zip(tags, paragraphs, docs):
+            s = tag.encode_contents().decode("utf8")
 
-                # TODO: make asynchronous
-                new_string = "<annotated>{}</annotated>".format(
-                    Paragraph(
-                        s,
-                        vocab=vocab,
-                        raw_ents=doc.ents,
-                        spaced_raw_text=spaced_raw_text,
-                    ).annotated_with_entities
-                )  # 410ms TODO SPEED UP
-                tag.string = ""
-                tag.replace_with(BeautifulSoup(new_string, "lxml-xml"))
-
-        return self.__annotated_tree
+            # TODO: make asynchronous
+            new_string = "<annotated>{}</annotated>".format(
+                Paragraph(
+                    s, vocab=vocab, raw_ents=doc.ents, spaced_raw_text=spaced_raw_text,
+                ).annotated_with_entities
+            )  # 410ms TODO SPEED UP
+            tag.string = ""
+            tag.replace_with(BeautifulSoup(new_string, "lxml-xml"))
+        return annotated_tree_answer
 
     @property
     def description(self):
