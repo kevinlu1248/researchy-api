@@ -4,32 +4,17 @@ import requests
 from copy import deepcopy
 import re
 import json
-from typing import Callable
 
 import spacy
 from pyate import combo_basic
+
+from .utils import cached_property
 
 # from timer import *
 # from modules.cvalues import get_c_values
 
 # TODO: make tagged class
 # TODO: add get numbers (with plus or minus)
-
-
-def cached_property(property_function: Callable) -> Callable:
-    """
-    For making properties store themselves as private properties.
-    This is so that the same property does not get computed twice by storing the
-    the result but at the same time unneeded properties never get called. 
-    """
-
-    @property
-    def decorated_property(self):
-        if not hasattr(self, "_{}__{}".format(type(self).__name__, property)):
-            setattr(self, "__{}".format(property.__name__), property_function(self))
-        return getattr(self, "__{}".format(property.__name__))
-
-    return decorated_property
 
 
 class Paragraph:
@@ -129,94 +114,73 @@ class Paragraph:
             "status": response.status_code,
         }
 
-    # @property
-    # def raw_text(self):
-    #     if not hasattr(self, "_Paragraph__raw_text"):
-    #         self.__raw_text = deepcopy(self.html)
-    #         self.__raw_text = re.sub(r" {3,}", " ", self.__raw_text)
-    #     return self.__raw_text
-
     @cached_property
     def raw_text(self):
         raw = deepcopy(self.html)
         return re.sub(r" {3,}", " ", raw)
 
-    @property
+    # @property
+    # def raw_text(self):
+    #     print(hasattr(self, "__raw_text"))
+    #     if not hasattr(self, "__raw_text"):
+    #         raw = deepcopy(self.html)
+    #         setattr(self, "__raw_text", re.sub(r" {3,}", " ", raw))
+    #     return getattr(self, "__raw_text")
+
+    @cached_property
     def spaced_raw_text(self):
-        if not hasattr(self, "_Paragraph__spaced_raw_text"):
-            self.__init_html_tags()
-        return self.__spaced_raw_text
+        self.__init_html_tags()
 
-    @property
+    @cached_property
     def html_tags(self):
-        if not hasattr(self, "_Paragraph__html_tags"):
-            self.__init_html_tags()
-        return self.__html_tags
+        self.__init_html_tags()
 
-    @property
+    @cached_property
     def key_terms(self):
-        if not hasattr(self, "_Paragraph__key_terms"):
-            # print(combo_basic(self.raw_text))
-            num_of_terms = int(Paragraph.__IMPORTANCE_RATIO * self.raw_text.count(" "))
-            self.__key_terms = combo_basic(self.raw_text).index.values.tolist()
-            self.__key_terms = self.__key_terms[
-                : min(len(self.__key_terms) - 1, num_of_terms)
-            ]
-        return self.__key_terms
+        num_of_terms = int(Paragraph.__IMPORTANCE_RATIO * self.raw_text.count(" "))
+        key_terms = combo_basic(self.raw_text).index.values.tolist()
+        return key_terms[: min(len(key_terms) - 1, num_of_terms)]
 
-    @property
+    @cached_property
     def key_term_indices(self):
-        if not hasattr(self, "_Paragraph__key_term_indices"):
-            self.__key_term_indices = []
-            # TODO: use a trie since its faster
-            for term in self.key_terms:
-                index = self.spaced_raw_text.lower().find(term)
-                if index == -1:
-                    continue
-                self.__key_term_indices.append(
-                    {"tag": "term", "start": index, "end": index + len(term)}
-                )
-        return self.__key_term_indices
+        indices = []
+        # TODO: use a trie since its faster
+        for term in self.key_terms:
+            index = self.spaced_raw_text.lower().find(term)
+            if index == -1:
+                continue
+            indices.append({"tag": "term", "start": index, "end": index + len(term)})
+        return indices
 
-    @property
+    @cached_property
     def raw_ents(self):
-        if not hasattr(self, "_Paragraph__raw_ents"):
-            self.__raw_ents = Paragraph.nlp(self.spaced_raw_text).ents
-        return self.__raw_ents
+        return Paragraph.nlp(self.spaced_raw_text).ents
 
-    @property
+    @cached_property
     def entities(self):
-        if not hasattr(self, "_Paragraph__entities"):
-            self.__entities = [
-                {"tag": ent.label_, "start": ent.start_char, "end": ent.end_char}
-                for ent in self.raw_ents
-            ]
-        return self.__entities
+        return [
+            {"tag": ent.label_, "start": ent.start_char, "end": ent.end_char}
+            for ent in self.raw_ents
+        ]
 
     @property
     def annotated_with_entities(self):
-        if not hasattr(self, "_Paragraph__annotated_with_entities"):
-            self.__annotated_with_entities = deepcopy(self.html)
-            key_terms = deepcopy(self.key_term_indices)
-            html_tags = deepcopy(self.html_tags)
-            ents = deepcopy(self.entities)
-            all_tags = sorted(key_terms + ents, key=lambda x: x["start"])
-            all_tags = Paragraph.__remove_self_overlap(all_tags)
-            for overlap in Paragraph.__get_overlap(html_tags, all_tags)[::-1]:
-                all_tags.pop(overlap)
-            for ent in all_tags[::-1]:
-                self.__annotated_with_entities = Paragraph.__insert_helper(
-                    self.__annotated_with_entities,
-                    "</{}>".format(ent["tag"].lower()),
-                    ent["end"],
-                )
-                self.__annotated_with_entities = Paragraph.__insert_helper(
-                    self.__annotated_with_entities,
-                    "<{}>".format(ent["tag"].lower()),
-                    ent["start"],
-                )
-        #             end()
-        return self.__annotated_with_entities
+        annotated = deepcopy(self.html)
+        key_terms = deepcopy(self.key_term_indices)
+        html_tags = deepcopy(self.html_tags)
+        ents = deepcopy(self.entities)
+        all_tags = sorted(key_terms + ents, key=lambda x: x["start"])
+        all_tags = Paragraph.__remove_self_overlap(all_tags)
+        for overlap in Paragraph.__get_overlap(html_tags, all_tags)[::-1]:
+            all_tags.pop(overlap)
+        for ent in all_tags[::-1]:
+            annotated = Paragraph.__insert_helper(
+                annotated, "</{}>".format(ent["tag"].lower()), ent["end"],
+            )
+            annotated = Paragraph.__insert_helper(
+                annotated, "<{}>".format(ent["tag"].lower()), ent["start"],
+            )
+        return annotated
 
 
 if __name__ == "__main__":
