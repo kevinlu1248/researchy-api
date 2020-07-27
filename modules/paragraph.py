@@ -8,7 +8,7 @@ import json
 import spacy
 from pyate import combo_basic
 
-from .utils import cached_property
+from .utils import cached_property, indirectly_cached_property
 
 # from timer import *
 # from modules.cvalues import get_c_values
@@ -127,11 +127,11 @@ class Paragraph:
     #         setattr(self, "__raw_text", re.sub(r" {3,}", " ", raw))
     #     return getattr(self, "__raw_text")
 
-    @cached_property
+    @indirectly_cached_property
     def spaced_raw_text(self):
         self.__init_html_tags()
 
-    @cached_property
+    @indirectly_cached_property
     def html_tags(self):
         self.__init_html_tags()
 

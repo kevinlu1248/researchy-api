@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 from pyate import combo_basic
 import spacy_readability
 
-from .utils import cached_property
+from .utils import cached_property, indirectly_cached_property
 from .paragraph import Paragraph
 
 tmp = 0
@@ -91,13 +91,13 @@ class Website:
             )
         return s
 
-    @cached_property
+    @indirectly_cached_property
     def url(self):
         raise AttributeError("No URL found")
 
     @cached_property
     def raw_html(self):
-        print(hasattr(self, "_Website__raw_html"))
+        # print(hasattr(self, "_Website__raw_html"))
         return requests.get(self.url).text
 
     @property
@@ -139,7 +139,7 @@ class Website:
             ):
                 href = self.url + "/" + href
             rlinks.add(href)
-        print(rlinks)
+        return rlinks
 
     @cached_property
     def web_text(self):
@@ -150,15 +150,15 @@ class Website:
             )
         )
 
-    @cached_property
+    @indirectly_cached_property
     def grade_level(self):
         self.init_readability()
 
-    @cached_property
+    @indirectly_cached_property
     def reading_ease(self):
         self.init_readability()
 
-    @cached_property
+    @indirectly_cached_property
     def word_count(self):
         self.init_readability()
 
@@ -166,7 +166,6 @@ class Website:
     def annotated_tree(self):
         #             start() 13ms
         annotated_tree_answer = copy.copy(self.display)
-
         if self.use_vocab:
             # 691ms TODO SPEED UP
             vocab = Paragraph(self.web_text).key_terms
@@ -185,7 +184,6 @@ class Website:
         )  # parallelize?
         for tag, spaced_raw_text, doc in zip(tags, paragraphs, docs):
             s = tag.encode_contents().decode("utf8")
-
             # TODO: make asynchronous
             new_string = "<annotated>{}</annotated>".format(
                 Paragraph(
