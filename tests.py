@@ -1,7 +1,7 @@
 # utf-8
 
-from requests import get
 from modules import *
+from requests import get
 
 print("Loading modules...")
 
