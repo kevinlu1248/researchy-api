@@ -1,13 +1,10 @@
 import requests
-import re
 import copy
 import time
 
 import spacy
-from lxml import etree
 from readability import Document
 from bs4 import BeautifulSoup
-from pyate import combo_basic
 import spacy_readability
 
 from .utils import cached_property, indirectly_cached_property

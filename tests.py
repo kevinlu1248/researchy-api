@@ -1,5 +1,4 @@
 from modules import *
-from requests import get
 
 if __name__ == "__main__":
     with open("data/testfile.html", "r") as f:
