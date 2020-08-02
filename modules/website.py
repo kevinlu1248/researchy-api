@@ -29,7 +29,7 @@ def end(s=""):
 
 
 class Website:
-    # nlp = spacy.load("en_ner_bionlp13cg_md")
+    nlp = spacy.load("en_ner_bionlp13cg_md")
     reading_nlp = spacy.load("en_core_web_sm")
     reading_nlp.add_pipe(reading_nlp.create_pipe("sentencizer"))
     reading_nlp.add_pipe(spacy_readability.Readability())
@@ -180,7 +180,7 @@ class Website:
             paragraphs.append(Paragraph(s).spaced_raw_text)
         tags = filter(lambda tag: len(tag.encode_contents().decode("utf8")) > 300, tags)
         docs = list(
-            Website.reading_nlp.pipe(paragraphs, disable=["tagger", "parser"])
+            Website.nlp.pipe(paragraphs, disable=["tagger", "parser"])
         )  # parallelize?
         for tag, spaced_raw_text, doc in zip(tags, paragraphs, docs):
             s = tag.encode_contents().decode("utf8")

@@ -19,10 +19,11 @@ from .utils import cached_property, indirectly_cached_property
 
 class Paragraph:
 
-    nlp = spacy.load("en_core_web_sm")
+    # nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.load("en_ner_bionlp13cg_md")
     html_tag_pattern = re.compile("</?[^/>][^>]*/?>")
     __fivefilters_url = "http://termextract.fivefilters.org/extract.php"
-    __priority = {"term": 5, "pos": 1, "cardinal": 1}
+    __priority = {"term": 3, "pos": 1, "cardinal": 2}
     __IMPORTANCE_RATIO = 0.05
 
     def __init__(
@@ -78,6 +79,10 @@ class Paragraph:
         # print(sorted(list(set(res))))
         return sorted(list(set(res)))
 
+    def __init_spacy_doc(self):
+        # TODO: Initialize raw_ents and key_terms
+        pass
+
     def __init_html_tags(self):
         self.__html_tags = []
         self.__spaced_raw_text = deepcopy(self.html)
@@ -93,6 +98,9 @@ class Paragraph:
             )
 
     def fivefilters_get_terms(self, max=None):
+        """
+        TODO: deprecate
+        """
         if max is None:
             max = int(len(set(self.spaced_raw_text)) * Paragraph.__IMPORTANCE_RATIO)
         # print(max)
@@ -119,14 +127,6 @@ class Paragraph:
         raw = deepcopy(self.html)
         return re.sub(r" {3,}", " ", raw)
 
-    # @property
-    # def raw_text(self):
-    #     print(hasattr(self, "__raw_text"))
-    #     if not hasattr(self, "__raw_text"):
-    #         raw = deepcopy(self.html)
-    #         setattr(self, "__raw_text", re.sub(r" {3,}", " ", raw))
-    #     return getattr(self, "__raw_text")
-
     @indirectly_cached_property
     def spaced_raw_text(self):
         self.__init_html_tags()
@@ -142,6 +142,11 @@ class Paragraph:
         return key_terms[: min(len(key_terms) - 1, num_of_terms)]
 
     @cached_property
+    def raw_ents(self):
+        print("called")
+        return Paragraph.nlp(self.spaced_raw_text).ents
+
+    @cached_property
     def key_term_indices(self):
         indices = []
         # TODO: use a trie since its faster
@@ -153,11 +158,8 @@ class Paragraph:
         return indices
 
     @cached_property
-    def raw_ents(self):
-        return Paragraph.nlp(self.spaced_raw_text).ents
-
-    @cached_property
     def entities(self):
+        # print([ent.label_ for ent in self.raw_ents])
         return [
             {"tag": ent.label_, "start": ent.start_char, "end": ent.end_char}
             for ent in self.raw_ents
