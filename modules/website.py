@@ -1,14 +1,15 @@
-import requests
 import copy
 import time
 
+import requests
 import spacy
-from readability import Document
-from bs4 import BeautifulSoup
 import spacy_readability
+from bs4 import BeautifulSoup
+from readability import Document
 
-from .utils import cached_property, indirectly_cached_property
 from .paragraph import Paragraph
+from .utils import cached_property
+from .utils import indirectly_cached_property
 
 tmp = 0
 start_ = time.time()
@@ -30,6 +31,7 @@ class Website:
     reading_nlp = spacy.load("en_core_web_sm")
     reading_nlp.add_pipe(reading_nlp.create_pipe("sentencizer"))
     reading_nlp.add_pipe(spacy_readability.Readability())
+
     # pattern = \
     # re.compile('((http|ftp|https)://)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}([-a-zA-Z0-9@:%_\+.~#?&//=]*)')
 
