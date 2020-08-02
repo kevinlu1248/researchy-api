@@ -1,14 +1,14 @@
-import requests
 import copy
 import time
 
+import requests
 import spacy
-from readability import Document
-from bs4 import BeautifulSoup
 import spacy_readability
+from bs4 import BeautifulSoup
+from readability import Document
 
-from .utils import cached_property, indirectly_cached_property
 from .paragraph import Paragraph
+from .utils import cached_property, indirectly_cached_property
 
 tmp = 0
 start_ = time.time()
