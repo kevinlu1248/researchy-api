@@ -70,6 +70,7 @@ Jinja2 = "==2.11.2"
 MarkupSafe = "==1.1.1"
 PyYAML = "==5.3.1"
 Werkzeug = "==1.0.1"
+en-ner-bionlp13cg-md = {file = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.2.5/en_ner_bionlp13cg_md-0.2.5.tar.gz"}
 
 [requires]
 python_version = "3.6"

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e5557e073407d7058e38a87e914b93c205821318b27c0d17b0cd4c72b9396873"
+            "sha256": "189ab01343b7484eabdce753ebc1e745e2bb5f9b94cb416ab31977584043b4ab"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -167,6 +167,13 @@
                 "sha256:06c80936324012d1223291d2af41a5229e746dc2dee8fe31a532666ee3d18aaa"
             ],
             "version": "==2.3.1"
+        },
+        "en-ner-bionlp13cg-md": {
+            "file": "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.2.5/en_ner_bionlp13cg_md-0.2.5.tar.gz",
+            "hashes": [
+                "sha256:a026f5176e5111893c8ce8812b567cf8724f920d8b839bb0cd92f3deb5ae4ea8"
+            ],
+            "version": "==0.2.5"
         },
         "enum-compat": {
             "hashes": [
