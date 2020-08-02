@@ -37,8 +37,7 @@ class Website:
 
     def __init__(self, url=None, raw_html=None, use_vocab=True):
         if url is None and raw_html is None:
-            raise AttributeError(
-                "Please initiate with either a URL or HTML file.")
+            raise AttributeError("Please initiate with either a URL or HTML file.")
         if url is not None:
             self.__url = url
         if raw_html is not None:
@@ -48,7 +47,8 @@ class Website:
     def init_readability(self):
         # find a faster library
         doc = Website.reading_nlp(
-            self.web_text, disable=["tokenizer", "tagger", "parser", "ner"])
+            self.web_text, disable=["tokenizer", "tagger", "parser", "ner"]
+        )
         self.__grade_level = doc._.flesch_kincaid_grade_level
         self.__reading_ease = doc._.flesch_kincaid_reading_ease
         self.__word_count = len(doc)
@@ -68,11 +68,10 @@ class Website:
     @staticmethod
     def get_entities_from_text(s):
         doc = Website.nlp(s)
-        return [{
-            "name": ent.label_,
-            "start": ent.start_char,
-            "end": ent.end_char
-        } for ent in doc.ents]
+        return [
+            {"name": ent.label_, "start": ent.start_char, "end": ent.end_char}
+            for ent in doc.ents
+        ]
 
     @staticmethod
     def get_annotated_entities(s):
@@ -83,10 +82,12 @@ class Website:
             ents.pop(overlap)
         #         print(Website.get_entities_from_text(new_s)[::-1])
         for ent in ents[::-1]:
-            s = Website.__insert_helper(s, "</{}>".format(ent["name"].lower()),
-                                        ent["end"])
-            s = Website.__insert_helper(s, "<{}>".format(ent["name"].lower()),
-                                        ent["start"])
+            s = Website.__insert_helper(
+                s, "</{}>".format(ent["name"].lower()), ent["end"]
+            )
+            s = Website.__insert_helper(
+                s, "<{}>".format(ent["name"].lower()), ent["start"]
+            )
         return s
 
     @indirectly_cached_property
@@ -130,8 +131,11 @@ class Website:
                 continue
             if href[0] == "/":
                 href = self.url + href
-            if (not href.startswith("http://") or href.startswith("http://")
-                    or href.startswith("ftp://")):
+            if (
+                not href.startswith("http://")
+                or href.startswith("http://")
+                or href.startswith("ftp://")
+            ):
                 href = self.url + "/" + href
             rlinks.add(href)
         return rlinks
@@ -142,7 +146,8 @@ class Website:
             filter(
                 lambda s: len(s) > 300,
                 map(lambda p: p.get_text(), self.display.find_all("p")),
-            ))
+            )
+        )
 
     @indirectly_cached_property
     def grade_level(self):
@@ -172,22 +177,18 @@ class Website:
             if len(s) <= 300:
                 continue
             paragraphs.append(Paragraph(s).spaced_raw_text)
-        tags = filter(
-            lambda tag: len(tag.encode_contents().decode("utf8")) > 300, tags)
+        tags = filter(lambda tag: len(tag.encode_contents().decode("utf8")) > 300, tags)
         docs = list(
-            Website.reading_nlp.pipe(paragraphs,
-                                     disable=["tagger",
-                                              "parser"]))  # parallelize?
+            Website.reading_nlp.pipe(paragraphs, disable=["tagger", "parser"])
+        )  # parallelize?
         for tag, spaced_raw_text, doc in zip(tags, paragraphs, docs):
             s = tag.encode_contents().decode("utf8")
             # TODO: make asynchronous
             new_string = "<annotated>{}</annotated>".format(
                 Paragraph(
-                    s,
-                    vocab=vocab,
-                    raw_ents=doc.ents,
-                    spaced_raw_text=spaced_raw_text,
-                ).annotated_with_entities)  # 410ms TODO SPEED UP
+                    s, vocab=vocab, raw_ents=doc.ents, spaced_raw_text=spaced_raw_text,
+                ).annotated_with_entities
+            )  # 410ms TODO SPEED UP
             tag.string = ""
             tag.replace_with(BeautifulSoup(new_string, "lxml-xml"))
         return annotated_tree_answer
