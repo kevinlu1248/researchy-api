@@ -1,8 +1,10 @@
+-i https://pypi.org/simple
 aniso8601==8.0.0
 attrs==19.3.0
 awscli==1.18.58
 beautifulsoup4==4.9.0
 blis==0.4.1
+botocore==1.16.8
 catalogue==1.0.0
 certifi==2020.4.5.1
 chardet==3.0.4
@@ -12,19 +14,19 @@ conllu==2.3.2
 cssselect==1.1.0
 cymem==2.0.3
 docutils==0.15.2
-en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
 enum-compat==0.0.3
-Flask==1.1.2
-Flask-RESTful==0.3.8
+flask-restful==0.3.8
+flask==1.1.2
 gunicorn==20.0.4
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz#egg=en-core-web-sm
 idna==2.9
 importlib-metadata==1.6.0
 itsdangerous==1.1.0
-Jinja2==2.11.2
+jinja2==2.11.2
 jmespath==0.9.5
 joblib==0.14.1
 lxml==4.5.0
-MarkupSafe==1.1.1
+markupsafe==1.1.1
 murmurhash==1.0.2
 nmslib==2.0.6
 numpy==1.18.4
@@ -39,7 +41,7 @@ pybind11==2.5.0
 pysbd==0.2.3
 python-dateutil==2.8.1
 pytz==2020.1
-PyYAML==5.3.1
+pyyaml==5.3.1
 readability-lxml==0.7.1
 requests==2.23.0
 rsa==3.4.2
@@ -49,8 +51,8 @@ scipy==1.4.1
 scispacy==0.2.4
 six==1.14.0
 soupsieve==2.0
-spacy==2.3.2
 spacy-readability==1.4.1
+spacy==2.3.2
 srsly==1.0.2
 syllapy==0.7.1
 thinc==7.4.1
@@ -60,5 +62,5 @@ typing==3.6.4
 ujson==1.35
 urllib3==1.25.9
 wasabi==0.6.0
-Werkzeug==1.0.1
+werkzeug==1.0.1
 zipp==3.1.0
