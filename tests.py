@@ -1,9 +1,11 @@
 # utf-8
+from requests import get
+
+from modules import *
 
 print("Loading modules...")
-from modules import *
+
 print("Done loading.")
-from requests import get
 
 if __name__ == "__main__":
     with open("data/testfile.html", "r") as f:
