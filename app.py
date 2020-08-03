@@ -1,6 +1,10 @@
-from flask import Flask, make_response, render_template, request
-# from flask_restful import Resource, Api
+from flask import Flask
+from flask import make_response
+from flask import render_template
+from flask import request
+
 from modules.website import Website
+# from flask_restful import Resource, Api
 
 app = Flask("researchy-api")
 
