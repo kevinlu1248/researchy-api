@@ -8,3 +8,5 @@ env
 out
 data
 arxiv
+Pipfile
+Pipfile.lock
