@@ -8,7 +8,54 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 	</head>
 	<body>
-		<h1>Research Mode</h1>
-		<h3>Accelerate research</h3>
+		<div class="row text-light-blue" action="/signup" method="POST">
+			<form class="col s12 w-50">
+				<!-- <div class="row">
+					<div class="input-field col s6">
+						<input
+							name="first"
+							id="first_name"
+							type="text"
+							class="validate"
+						/>
+						<label for="first_name">First Name</label>
+					</div>
+					<div class="input-field col s6">
+						<input
+							name="last"
+							id="last_name"
+							type="text"
+							class="validate"
+						/>
+						<label for="last_name">Last Name</label>
+					</div>
+				</div> -->
+				<div class="row">
+					<div class="input-field col s12">
+						<input
+							name="email"
+							id="email"
+							type="email"
+							class="validate"
+						/>
+						<label for="email">Email</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12">
+						<input
+							name="password"
+							id="password"
+							type="password"
+							class="validate"
+						/>
+						<label for="password">Password</label>
+					</div>
+				</div>
+				<button name="submit" id="submit" type="submit" class="btn">
+					Submit
+				</button>
+			</form>
+		</div>
 	</body>
 </html>

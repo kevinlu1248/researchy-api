@@ -1,26 +1,32 @@
+import os
+
 import sqlalchemy
 from sqlalchemy import create_engine, Column, Integer, String, Sequence
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine(
-    "postgres://vcommvznlesvvf:306a5c86a2c5b206725287d7231a26563d8ad1fc6289173261218b8312485e81@ec2-3-208-50-226.compute-1.amazonaws.com:5432/dde9qpdu2gb4s2",
-    echo=True,
-)
+from dotenv import load_dotenv
 
+load_dotenv()
+
+engine = create_engine(os.environ.get("DB_URL"), echo=True)
 Session = sessionmaker(bind=engine)
-session = Session()
-
 Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
     user_id = Column(Integer, Sequence("user_id_seq"), primary_key=True)
-    email = Column(String(255))
-    password = Column(String(255))
+    first = Column(String(255))
+    last = Column(String(255))
+    email = Column(String(255), nullable=False)
+    password = Column(String(255), nullable=False)
 
     def __repr__(self):
-        return "<User(email='{}', password='{}')>".format(
-            self.email,
-            self.password,
-        )
+        return "<User(email='{}', password='{}')>".format(self.email, self.password,)
+
+if __name__ == "__main__":
+    session = Session()
+    session.execute("DROP TABLE users;")
+    session.commit()
+
+    Base.metadata.create_all(engine)
