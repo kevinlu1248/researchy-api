@@ -22,7 +22,8 @@ def api():
         return make_response("Please provide a valid object.", 400)
     if "text" not in body and "url" not in body:
         return make_response("Please provide a text or url.", 400)
-    display = Website(url=body.get("url", None), raw_html=body.get("text", None))
+    display = Website(url=body.get("url", None),
+                      raw_html=body.get("text", None))
     return make_response(display.description, 200)
 
 
@@ -42,7 +43,6 @@ def api():
 #         return make_response("Please provide a text or url.", 400)
 #     display = Website(url=body.get("url", None), raw_html=body.get("text", None))
 #     return make_response(display.description, 200)
-
 
 # api.add_resource(ResearchyAPI, "/")
 
