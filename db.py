@@ -13,6 +13,7 @@ session = Session()
 
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = "users"
     user_id = Column(Integer, Sequence("user_id_seq"), primary_key=True)
@@ -20,7 +21,4 @@ class User(Base):
     password = Column(String(255))
 
     def __repr__(self):
-        return "<User(email='{}', password='{}')>".format(
-            self.email,
-            self.password,
-        )
+        return "<User(email='{}', password='{}')>".format(self.email, self.password,)
