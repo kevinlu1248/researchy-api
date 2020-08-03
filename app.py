@@ -1,5 +1,4 @@
-from flask import Flask, request, render_template, make_response
-
+from flask import Flask, make_response, render_template, request
 # from flask_restful import Resource, Api
 from modules.website import Website
 
