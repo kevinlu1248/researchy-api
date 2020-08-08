@@ -17,8 +17,7 @@ db = SQLAlchemy(app)
 
 class User(db.Model):
     __tablename__ = "users"
-    user_id = db.Column(db.Integer, db.Sequence(
-        "user_id_seq"), primary_key=True)
+    user_id = db.Column(db.Integer, db.Sequence("user_id_seq"), primary_key=True)
     first = db.Column(db.String(255))
     last = db.Column(db.String(255))
     email = db.Column(db.String(255), nullable=False)
@@ -77,8 +76,7 @@ def api():
         return make_response("Please provide a valid object.", 400)
     if "text" not in body and "url" not in body:
         return make_response("Please provide a text or url.", 400)
-    display = Website(url=body.get("url", None),
-                      raw_html=body.get("text", None))
+    display = Website(url=body.get("url", None), raw_html=body.get("text", None))
     return make_response(display.description, 200)
 
 
