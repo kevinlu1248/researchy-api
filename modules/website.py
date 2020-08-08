@@ -11,7 +11,8 @@ from pyate import combo_basic
 from readability import Document
 
 from .paragraph import Paragraph
-from .utils import cached_property, indirectly_cached_property
+from .utils import cached_property
+from .utils import indirectly_cached_property
 
 tmp = 0
 start_ = time.time()
