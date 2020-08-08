@@ -6,30 +6,40 @@
 		/>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+		<style>
+			/* label color */
+			.input-field label {
+				color: #000;
+			}
+			/* label focus color */
+			.input-field input[type="text"]:focus + label {
+				color: #000;
+			}
+			/* label underline focus color */
+			.input-field input[type="text"]:focus {
+				border-bottom: 1px solid #000;
+				box-shadow: 0 1px 0 0 #000;
+			}
+			/* valid color */
+			.input-field input[type="text"].valid {
+				border-bottom: 1px solid #000;
+				box-shadow: 0 1px 0 0 #000;
+			}
+			/* invalid color */
+			.input-field input[type="text"].invalid {
+				border-bottom: 1px solid #000;
+				box-shadow: 0 1px 0 0 #000;
+			}
+			/* icon prefix focus color */
+			.input-field .prefix.active {
+				color: #000;
+			}
+		</style>
 	</head>
 	<body>
-		<div class="row text-light-blue" action="/signup" method="POST">
-			<form class="col s12 w-50">
-				<!-- <div class="row">
-					<div class="input-field col s6">
-						<input
-							name="first"
-							id="first_name"
-							type="text"
-							class="validate"
-						/>
-						<label for="first_name">First Name</label>
-					</div>
-					<div class="input-field col s6">
-						<input
-							name="last"
-							id="last_name"
-							type="text"
-							class="validate"
-						/>
-						<label for="last_name">Last Name</label>
-					</div>
-				</div> -->
+		<div class="row text-light-blue">
+			<form class="col s12 w-50" action="/signup" method="POST">
 				<div class="row">
 					<div class="input-field col s12">
 						<input
@@ -52,7 +62,7 @@
 						<label for="password">Password</label>
 					</div>
 				</div>
-				<button name="submit" id="submit" type="submit" class="btn">
+				<button id="submit" type="submit" class="btn">
 					Submit
 				</button>
 			</form>
