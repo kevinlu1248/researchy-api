@@ -12,6 +12,7 @@ from werkzeug.security import generate_password_hash
 
 from db import engine
 from db import User
+
 # from modules.website import Website
 
 load_dotenv()
@@ -22,9 +23,7 @@ db = SQLAlchemy(app)
 
 class User(db.Model):
     __tablename__ = "users"
-    user_id = db.Column(db.Integer,
-                        db.Sequence("user_id_seq"),
-                        primary_key=True)
+    user_id = db.Column(db.Integer, db.Sequence("user_id_seq"), primary_key=True)
     first = db.Column(db.String(255))
     last = db.Column(db.String(255))
     email = db.Column(db.String(255), nullable=False)
@@ -38,7 +37,8 @@ class User(db.Model):
 
     def __repr__(self):
         return "<User(name='{} {}' email='{}')>".format(
-            self.first, self.last, self.email)
+            self.first, self.last, self.email
+        )
 
 
 @app.route("/")
@@ -58,8 +58,12 @@ def signup():
         return render_template("signup.html")
     elif request.method == "POST":
         # TODO: ADD FORM VALIDATION
-        if (db.session.query(User.user_id).filter_by(
-                email=request.form["email"]).scalar() is None):
+        if (
+            db.session.query(User.user_id)
+            .filter_by(email=request.form["email"])
+            .scalar()
+            is None
+        ):
             new_user = User(email=request.form["email"], password="")
             new_user.set_password(request.form["password"])
             db.session.add(new_user)
@@ -78,8 +82,7 @@ def api():
         return make_response("Please provide a valid object.", 400)
     if "text" not in body and "url" not in body:
         return make_response("Please provide a text or url.", 400)
-    display = Website(url=body.get("url", None),
-                      raw_html=body.get("text", None))
+    display = Website(url=body.get("url", None), raw_html=body.get("text", None))
     return make_response(display.description, 200)
 
 

@@ -28,5 +28,6 @@ if __name__ == "__main__":
     target_audience = "https://example.com"
 
     creds = service_account.IDTokenCredentials.from_service_account_file(
-        "svc.json", target_audience=target_audience)
+        "svc.json", target_audience=target_audience
+    )
     print(creds)
