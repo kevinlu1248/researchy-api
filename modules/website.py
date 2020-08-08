@@ -38,7 +38,8 @@ class Website:
 
     def __init__(self, url=None, raw_html=None, use_vocab=True):
         if url is None and raw_html is None:
-            raise AttributeError("Please initiate with either a URL or HTML file.")
+            raise AttributeError(
+                "Please initiate with either a URL or HTML file.")
         if url is not None:
             self.__url = url
         if raw_html is not None:
@@ -182,7 +183,8 @@ class Website:
             if len(s) <= 300:
                 continue
             paragraphs.append(Paragraph(s).spaced_raw_text)
-        tags = filter(lambda tag: len(tag.encode_contents().decode("utf8")) > 300, tags)
+        tags = filter(lambda tag: len(
+            tag.encode_contents().decode("utf8")) > 300, tags)
         docs = list(
             Website.nlp.pipe(paragraphs, disable=["tagger", "parser"])
         )  # parallelize?
