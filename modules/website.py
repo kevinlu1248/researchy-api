@@ -150,6 +150,10 @@ class Website:
             )
         )
 
+    @cached_property
+    def key_terms(self):
+        return Paragraph(self.web_text).key_terms
+
     @indirectly_cached_property
     def grade_level(self):
         self.init_readability()
@@ -168,7 +172,7 @@ class Website:
         annotated_tree_answer = copy.copy(self.display)
         if self.use_vocab:
             # 691ms TODO SPEED UP
-            vocab = Paragraph(self.web_text).key_terms
+            vocab = self.key_terms
         else:
             vocab = []
         paragraphs = []
@@ -201,6 +205,7 @@ class Website:
             "word_count": self.word_count,
             "reading_ease": self.reading_ease,
             "grade_level": self.grade_level,
+            "key_terms": self.key_terms if self.vocab else None
         }
 
     def __str__(self):
