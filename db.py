@@ -26,7 +26,10 @@ class User(Base):
     password = Column(String(255), nullable=False)
 
     def __repr__(self):
-        return "<User(email='{}', password='{}')>".format(self.email, self.password,)
+        return "<User(email='{}', password='{}')>".format(
+            self.email,
+            self.password,
+        )
 
 
 if __name__ == "__main__":
