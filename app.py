@@ -1,13 +1,11 @@
 import os
 
-from flask import Flask, request, render_template, make_response, redirect
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
-
+from db import User, engine
 # from modules.website import Website
 from dotenv import load_dotenv
-
-from db import engine, User
+from flask import Flask, make_response, redirect, render_template, request
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import check_password_hash, generate_password_hash
 
 load_dotenv()
 app = Flask("researchy-api")

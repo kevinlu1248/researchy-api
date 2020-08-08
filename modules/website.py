@@ -1,17 +1,17 @@
-import requests
-import re
 import copy
+import re
 import time
 
+import requests
 import spacy
-from lxml import etree
-from readability import Document
-from bs4 import BeautifulSoup
-from pyate import combo_basic
 import spacy_readability
+from bs4 import BeautifulSoup
+from lxml import etree
+from pyate import combo_basic
+from readability import Document
 
-from .utils import cached_property, indirectly_cached_property
 from .paragraph import Paragraph
+from .utils import cached_property, indirectly_cached_property
 
 tmp = 0
 start_ = time.time()
