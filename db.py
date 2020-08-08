@@ -2,7 +2,11 @@ import os
 
 import sqlalchemy
 from dotenv import load_dotenv
-from sqlalchemy import Column, Integer, Sequence, String, create_engine
+from sqlalchemy import Column
+from sqlalchemy import create_engine
+from sqlalchemy import Integer
+from sqlalchemy import Sequence
+from sqlalchemy import String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
