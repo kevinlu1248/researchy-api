@@ -205,7 +205,7 @@ class Website:
             "word_count": self.word_count,
             "reading_ease": self.reading_ease,
             "grade_level": self.grade_level,
-            "key_terms": self.key_terms if self.use_vocab else None
+            "key_terms": self.key_terms if self.use_vocab else None,
         }
 
     def __str__(self):
