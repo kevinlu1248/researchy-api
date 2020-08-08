@@ -15,20 +15,20 @@ if __name__ == "__main__":
     # p = Paragraph(s)
     # p.raw_text
     # print(p.raw_text)
-	
-	# from google.oauth2 import service_account
 
-	# target_audience = 'https://example.com'
+    # from google.oauth2 import service_account
 
-	# creds = service_account.IDTokenCredentials.from_service_account_file(
-	#         'svc.json',
-	#         target_audience=target_audience)
+    # target_audience = 'https://example.com'
 
-	from google.oauth2 import service_account
+    # creds = service_account.IDTokenCredentials.from_service_account_file(
+    #         'svc.json',
+    #         target_audience=target_audience)
 
-	target_audience = 'https://example.com'
+    from google.oauth2 import service_account
 
-	creds = service_account.IDTokenCredentials.from_service_account_file(
-	        'svc.json',
-	        target_audience=target_audience)
-	print(creds)
+    target_audience = "https://example.com"
+
+    creds = service_account.IDTokenCredentials.from_service_account_file(
+        "svc.json", target_audience=target_audience
+    )
+    print(creds)

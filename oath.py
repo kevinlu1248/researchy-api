@@ -21,7 +21,7 @@ try:
     #     raise ValueError('Wrong hosted domain.')
 
     # ID token is valid. Get the user's Google Account ID from the decoded token.
-    userid = idinfo['sub']
+    userid = idinfo["sub"]
 except ValueError as e:
     # Invalid token
     print(e)

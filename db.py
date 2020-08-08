@@ -13,6 +13,7 @@ engine = create_engine(os.environ.get("DB_URL"), echo=True)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = "users"
     user_id = Column(Integer, Sequence("user_id_seq"), primary_key=True)
@@ -23,6 +24,7 @@ class User(Base):
 
     def __repr__(self):
         return "<User(email='{}', password='{}')>".format(self.email, self.password,)
+
 
 if __name__ == "__main__":
     session = Session()
