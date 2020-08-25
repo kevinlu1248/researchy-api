@@ -1,35 +1,4 @@
-import os
-
-from flask import Flask, request, render_template, make_response, redirect
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
-from modules.website import Website 
-from dotenv import load_dotenv
-
-from db import engine, User
-
-load_dotenv()
-app = Flask("researchy-api")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URL")
-db = SQLAlchemy(app)
-
-class User(db.Model):
-    __tablename__ = "users"
-    user_id = db.Column(db.Integer, db.Sequence("user_id_seq"), primary_key=True)
-    first = db.Column(db.String(255))
-    last = db.Column(db.String(255))
-    email = db.Column(db.String(255), nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password(self.password_hash, password)
-
-    def __repr__(self):
-        return "<User(name='{} {}' email='{}')>".format(self.first, self.last, self.email)
-
+from db import *
 
 @app.route("/")
 def index():
