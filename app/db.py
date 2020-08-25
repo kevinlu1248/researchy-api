@@ -13,11 +13,8 @@ from sqlalchemy.dialects.postgresql import Insert, insert
 
 from flask import Flask, request, render_template, make_response, redirect
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
 
 from dotenv import load_dotenv
-
-from modules.website import Website
 from app.utils import encode, decode
 
 load_dotenv()
@@ -27,6 +24,7 @@ engine = create_engine(os.environ.get("DB_URL"), echo=True)
 app = Flask("researchy-api")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DB_URL")
 app.config["SQLALCHEMY_ECHO"] = True
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 logging.basicConfig(filename="logs/main.log", level=logging.DEBUG)
 db = SQLAlchemy(app)
 
@@ -40,7 +38,7 @@ class User(db.Model):
 
     __tablename__ = "users"
     email = db.Column(EmailType, nullable=False, primary_key=True, unique=True)
-    gaia_id = db.Column(db.Integer, nullable=False)
+    gaia_id = db.Column(db.String(31), nullable=False)
 
     @validates("email")
     def validate_email(self, key, email):
@@ -95,15 +93,17 @@ class File(db.Model):
 
     @staticmethod
     def handleStorage(email, gaia_id, fs):
-        try:
-            User(email=email, gaia_id=gaia_id)
-        except Exception as error:
-            return False
+        """
+        Expect some input of the form:
+        {
+            email: "",
+            id: "",
+            storage: ...,
+        }
+        """
 
-        isValid = User.validate(email, gaia_id)
-        if not isValid:
-            print("Invalid email and gaia_id combination")
-            return False
+        User(email=email, gaia_id=gaia_id)
+        assert User.validate(email, gaia_id), "Invalid email and gaia_id combination"
 
         # TODO OPTIMIZE BY SENDING IN BULK
         for path, file in fs.items():
@@ -116,6 +116,8 @@ class File(db.Model):
             self.path, self.email, self.delta
         )
 
+
+# db.metadata.create_all(engine)
 
 if __name__ == "__main__":
     TEST_OBJ = {
@@ -203,4 +205,4 @@ if __name__ == "__main__":
 
     # db.session.add(user, user2)
 
-    db.session.commit()
+    # db.session.commit()
