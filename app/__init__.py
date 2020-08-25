@@ -1,2 +1,3 @@
 from .routing import app
-from .utils import decode, encode
+from .utils import decode
+from .utils import encode
