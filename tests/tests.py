@@ -33,8 +33,8 @@ if __name__ == "__main__":
     #     # Invalid token
     #     print(e)
 
-    import google.oauth2.id_token
     import google.auth.transport.requests
+    import google.oauth2.id_token
 
     request = google.auth.transport.requests.Request()
     target_audience = "https://pubsub.googleapis.com"
