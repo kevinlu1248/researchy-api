@@ -10,7 +10,7 @@ from flask import Flask, request, render_template, make_response, redirect
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# from modules.website import Website
+from modules.website import Website
 from dotenv import load_dotenv
 
 
@@ -74,21 +74,3 @@ class File(db.Model):
 
 # session.add(file)
 # session.commit()
-
-# class User(Base):
-#     __tablename__ = "users"
-#     user_id = Column(Integer, Sequence("user_id_seq"), primary_key=True)
-#     first = Column(String(255))
-#     last = Column(String(255))
-#     email = Column(String(255), nullable=False)
-#     password = Column(String(255), nullable=False)
-
-#     def __repr__(self):
-#         return "<User(email='{}', password='{}')>".format(self.email, self.password,)
-
-# if __name__ == "__main__":
-#     session = Session()
-#     session.execute("DROP TABLE users;")
-#     session.commit()
-
-#     Base.metadata.create_all(engine)

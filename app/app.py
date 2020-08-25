@@ -1,4 +1,4 @@
-from db import *
+from app.db import *
 
 @app.route("/")
 def index():
