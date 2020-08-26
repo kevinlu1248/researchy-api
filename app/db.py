@@ -28,7 +28,9 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 logging.basicConfig(filename="logs/main.log", level=logging.DEBUG)
 db = SQLAlchemy(app)
 
-# TODO SETUP STORAGE HANDLER
+# TODO FIX LOGGING
+# TODO FIX SECURITY ON BACKEND
+
 with open("app/email.regex") as file:
     EMAIL_CHECKER_REGEX = file.read()
 
