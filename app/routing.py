@@ -52,6 +52,8 @@ def api():
 @app.route("/storage", methods=["POST"])
 def storage():
     body = request.json
+    if body == None:
+        return make_response("Please submit a JSON", 400)
     try:
         email, gaia_id, storage = itemgetter("email", "id", "data")(body)
     except KeyError as error:
