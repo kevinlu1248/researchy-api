@@ -53,6 +53,7 @@ def api():
 def storage():
     body = request.json
     if body == None:
+        print("Not JSON!")
         return make_response("Please submit a JSON", 400)
     try:
         email, gaia_id, storage = itemgetter("email", "id", "data")(body)
