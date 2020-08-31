@@ -4,9 +4,12 @@ __pycache__
 *.pyc
 modules/*.pyc
 .idea
+.git env
 env
+logs/main.log
 out
 data
 arxiv
 Pipfile
 Pipfile.lock
+oath.py
