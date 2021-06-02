@@ -67,7 +67,7 @@ threadpoolctl==2.0.0
 tqdm==4.46.0
 typing==3.6.4
 ujson==1.35
-urllib3==1.25.9
+urllib3==1.26.5
 wasabi==0.6.0
 Werkzeug==1.0.1
 zipp==3.1.0
