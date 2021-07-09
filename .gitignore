@@ -13,3 +13,7 @@ arxiv
 Pipfile
 Pipfile.lock
 oath.py
+Procfile
+.env
+logs
+.vscode
