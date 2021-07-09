@@ -191,7 +191,10 @@ class Website:
             # TODO: make asynchronous
             new_string = "<annotated>{}</annotated>".format(
                 Paragraph(
-                    s, vocab=vocab, raw_ents=doc.ents, spaced_raw_text=spaced_raw_text,
+                    s,
+                    vocab=vocab,
+                    raw_ents=doc.ents,
+                    spaced_raw_text=spaced_raw_text,
                 ).annotated_with_entities
             )  # 410ms TODO SPEED UP
             tag.string = ""
@@ -205,7 +208,7 @@ class Website:
             "word_count": self.word_count,
             "reading_ease": self.reading_ease,
             "grade_level": self.grade_level,
-            "key_terms": self.key_terms if self.use_vocab else None
+            "key_terms": self.key_terms if self.use_vocab else None,
         }
 
     def __str__(self):

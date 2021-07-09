@@ -177,10 +177,14 @@ class Paragraph:
             all_tags.pop(overlap)
         for ent in all_tags[::-1]:
             annotated = Paragraph.__insert_helper(
-                annotated, "</{}>".format(ent["tag"].lower()), ent["end"],
+                annotated,
+                "</{}>".format(ent["tag"].lower()),
+                ent["end"],
             )
             annotated = Paragraph.__insert_helper(
-                annotated, "<{}>".format(ent["tag"].lower()), ent["start"],
+                annotated,
+                "<{}>".format(ent["tag"].lower()),
+                ent["start"],
             )
         return annotated
 
