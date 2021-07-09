@@ -5,7 +5,7 @@ def cached_property(property_function: Callable) -> Callable:
     """
     For making properties store themselves as private properties.
     This is so that the same property does not get computed twice by storing the
-    the result but at the same time unneeded properties never get called. 
+    the result but at the same time unneeded properties never get called.
     """
 
     @property
@@ -24,7 +24,7 @@ def cached_property(property_function: Callable) -> Callable:
 
 def indirectly_cached_property(property_function: Callable) -> Callable:
     """
-    Like cached property but runs another function that indirectly sets the 
+    Like cached property but runs another function that indirectly sets the
     private variable to the solution.
     """
 
