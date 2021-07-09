@@ -25,6 +25,8 @@ app = Flask("researchy-api")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DB_URL")
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+
 logging.basicConfig(filename="logs/main.log", level=logging.DEBUG)
 db = SQLAlchemy(app)
 
