@@ -66,7 +66,7 @@ thinc==7.4.1
 threadpoolctl==2.0.0
 tqdm==4.46.0
 typing==3.6.4
-ujson==1.35
+ujson==5.4.0
 urllib3==1.25.9
 wasabi==0.6.0
 Werkzeug==1.0.1
