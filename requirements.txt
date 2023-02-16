@@ -69,5 +69,5 @@ typing==3.6.4
 ujson==1.35
 urllib3==1.25.9
 wasabi==0.6.0
-Werkzeug==1.0.1
+Werkzeug==2.2.3
 zipp==3.1.0
